@@ -9,26 +9,20 @@ function userJoin(id, username, room){
 
 //Get current user
 function getCurrentUser(id){
-    return users.find((user)=>{
-        user.id === id
-    });
+    return users.find(user=> user.id === id);
 }
 
 //User leave
 function userLeave(id){
-    const index = user.findIndex((user)=>{
-        user.id === id
-    });
+    const index = users.findIndex(user => user.id === id);
     if(index !== -1){
-        return user.splice(index, 1);
+        return users.splice(index, 1)[0];
     }
 }
 
 //Get room users
 function getRoomUsers(room){
-    return users.filter((user)=>{
-        user.room === room
-    });
+    return users.filter(user => user.room === room);
 }
 
 module.exports = {
