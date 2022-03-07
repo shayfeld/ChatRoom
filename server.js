@@ -4,7 +4,7 @@ const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
-const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require('./utils/users');
+const {userJoin, getCurrentUser, userLeave, getRoomUsers, getSelectedUser} = require('./utils/users');
 const server = http.createServer(app);
 const io = socketio(server);
 
@@ -32,9 +32,15 @@ io.on('connection', socket =>{
     });
 
     //Listen for chatMessage
-    socket.on('chatMessage', (msg)=>{
+    socket.on('chatMessage', (result)=>{
         const user = getCurrentUser(socket.id);
-        io.to(user.room).emit('message', formatMessage(user.username,msg));
+        if(result.MessageTo === "all"){
+            io.to(user.room).emit('message', formatMessage(user.username,result.msg));
+        }
+        else{
+            const userTo = getSelectedUser(result.MessageTo,user.room);
+            io.to(userTo.id).emit('message', formatMessage(user.username,"Private message: " + result.msg));
+        }
     });
 
     //Client disconnects

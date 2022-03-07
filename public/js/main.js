@@ -2,7 +2,7 @@ const chatFrom = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
-const usersMessage = document.getElementById('usersMessage');
+const usersMessage = document.getElementById('MessageTo');
 
 
 //Get username and room from URL
@@ -35,9 +35,9 @@ chatFrom.addEventListener('submit', (e)=>{
 
     //Get message text
     const msg = e.target.elements.msg.value;
-
+    const MessageTo = e.target.elements.MessageTo.value;
     //Emit message to server
-    socket.emit('chatMessage', msg);
+    socket.emit('chatMessage', {MessageTo, msg});
 
     //Clear input
     e.target.elements.msg.value='';
