@@ -3,9 +3,14 @@ const users = [];
 //Join user to chat
 function userJoin(id, username, room){
     const user={id, username, room};
-    const existUser = getSelectedUser(username, room)
-    users.push(user);
-    return user;
+    
+    //User exist or max in peer room
+    if(getSelectedUser(username, room) || (getRoomUsers(room).length == 2 && room === 'Peer')){
+        return null;
+    }else{
+        users.push(user);
+        return user;
+    }  
 }
 
 //Get current user

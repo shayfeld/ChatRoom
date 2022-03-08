@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const router = express.Router();
 const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
@@ -17,18 +18,30 @@ io.on('connection', socket =>{
 
     socket.on('joinRoom', ({username, room}) =>{
         const user = userJoin(socket.id, username, room);
-        socket.join(user.room);
-        //Welcome current user
-        socket.emit('message',formatMessage(serverMsg,`Welcome to ${user.room} chat`));
+        if(user == null){
+            /** 
+            router.get('*',(req, res)=>{
+                res.redirect('index.html');
+            });
 
-        //Broadcast when a user connects
-        socket.broadcast.to(user.room).emit('message',formatMessage(serverMsg,`${user.username} has join the chat`));
-
-        //Send users and room info
-        io.to(user.room).emit('roomUsers',{
-            room: user.room,
-            users:getRoomUsers(user.room)
-        });
+            router.post('*',(req, res)=>{
+                res.redirect('index.html');
+            });
+            */
+        }else{
+            socket.join(user.room);
+            //Welcome current user
+            socket.emit('message',formatMessage(serverMsg,`Welcome to ${user.room} chat`));
+    
+            //Broadcast when a user connects
+            socket.broadcast.to(user.room).emit('message',formatMessage(serverMsg,`${user.username} has join the chat`));
+    
+            //Send users and room info
+            io.to(user.room).emit('roomUsers',{
+                room: user.room,
+                users:getRoomUsers(user.room)
+            });
+        } 
     });
 
     //Listen for chatMessage
